@@ -14,6 +14,7 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long Id;
     @Column(nullable = false,length = 50)
     private String name;
@@ -25,4 +26,5 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
+
 }

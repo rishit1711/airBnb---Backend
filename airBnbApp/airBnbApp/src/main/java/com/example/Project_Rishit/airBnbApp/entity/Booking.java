@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -35,10 +36,11 @@ public class Booking {
     @Column(nullable = false)
     private LocalDateTime CheckOut;
     @OneToOne(fetch = FetchType.LAZY)
-
+    @JoinColumn(name = "payment_id")
     private Payment payment;
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private BookingStatus bookingStatus;
+    @OneToMany(fetch = FetchType.LAZY)
+    private Set<Guest> guest;
 
 }
