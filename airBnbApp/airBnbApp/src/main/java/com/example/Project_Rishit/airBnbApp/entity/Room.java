@@ -31,7 +31,6 @@ public class Room {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
-
     @UpdateTimestamp
     private LocalDateTime UpdatedAt;
     @Column(nullable = false)
