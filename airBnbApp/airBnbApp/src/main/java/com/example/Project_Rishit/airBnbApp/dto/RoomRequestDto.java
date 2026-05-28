@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class RoomRequestDto {
 
-    private Long hotelId;
+
     private String type;
     private BigDecimal basePrice;
     private String[] photos;

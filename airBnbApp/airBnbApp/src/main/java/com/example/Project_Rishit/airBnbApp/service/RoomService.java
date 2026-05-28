@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface RoomService {
 
-    RoomResponseDto CreateNewRoom(RoomRequestDto roomRequestDto);
+    RoomResponseDto CreateNewRoom(Long hotelId,RoomRequestDto roomRequestDto);
     List<RoomResponseDto> getAllRoomsInHotel(Long HotelId);
 
     RoomResponseDto GetRoomById(Long roomId);

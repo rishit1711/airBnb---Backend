@@ -23,15 +23,16 @@ public class RoomServiceImpl implements RoomService{
     private final HotelRepository hotelRepository;
     private final ModelMapper modelMapper;
     @Override
-    public RoomResponseDto CreateNewRoom(RoomRequestDto roomRequestDto) {
-        log.info("Creating Room in Hotel with Id : {}",roomRequestDto.getHotelId());
-        Hotel hotel = hotelRepository.findById(roomRequestDto.getHotelId()).
-                orElseThrow(()->new ResourceNotFoundException("Hotel Does not Exis with this Id"+roomRequestDto.getHotelId()));
+    public RoomResponseDto CreateNewRoom(Long hotelId,RoomRequestDto roomRequestDto) {
+        log.info("Creating Room in Hotel with Id : {}",hotelId);
+        Hotel hotel = hotelRepository.findById(hotelId).
+                orElseThrow(()->new ResourceNotFoundException("Hotel Does not Exist with this Id"+hotelId));
 
 
         Room room = modelMapper.map(roomRequestDto,Room.class);
         room.setHotel(hotel);
         room = roomRepository.save(room);
+        System.out.println("ROOM ID = " + room.getId());
 
         return modelMapper.map(room,RoomResponseDto.class);
     }
