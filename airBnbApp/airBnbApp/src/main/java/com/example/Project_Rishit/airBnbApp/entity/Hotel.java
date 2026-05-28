@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Entity
@@ -40,6 +41,9 @@ public class Hotel {
     private HotelContactInfo contactInfo;
     @Column(nullable = false)
     private boolean isActive;
+
+    @OneToMany(mappedBy ="hotel" )
+    private List<Room> rooms;
 
 
 
