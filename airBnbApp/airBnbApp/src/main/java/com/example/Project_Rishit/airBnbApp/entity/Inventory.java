@@ -34,7 +34,7 @@ public class Inventory {
     private Integer bookedCount;
     @Column(nullable = false)
     private Integer totalCount;
-    @Column(nullable = false,precision = 2,scale = 2)
+    @Column(nullable = false,precision = 5,scale = 2)
     private BigDecimal surgeFactor;
     @Column(nullable = false,precision = 10,scale = 2)
     private BigDecimal price; // BASE PRICE * SURGE FACTOR

@@ -1,5 +1,4 @@
 package com.example.Project_Rishit.airBnbApp.service;
-
 import com.example.Project_Rishit.airBnbApp.Exceptions.ResourceNotFoundException;
 import com.example.Project_Rishit.airBnbApp.dto.RoomRequestDto;
 import com.example.Project_Rishit.airBnbApp.dto.RoomResponseDto;
@@ -7,6 +6,7 @@ import com.example.Project_Rishit.airBnbApp.entity.Hotel;
 import com.example.Project_Rishit.airBnbApp.entity.Room;
 import com.example.Project_Rishit.airBnbApp.repository.HotelRepository;
 import com.example.Project_Rishit.airBnbApp.repository.RoomRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -21,7 +21,10 @@ import java.util.stream.Collectors;
 public class RoomServiceImpl implements RoomService{
     private final RoomRepository roomRepository;
     private final HotelRepository hotelRepository;
+    private final InventoryService inventoryService;
     private final ModelMapper modelMapper;
+
+
     @Override
     public RoomResponseDto CreateNewRoom(Long hotelId,RoomRequestDto roomRequestDto) {
         log.info("Creating Room in Hotel with Id : {}",hotelId);
@@ -32,19 +35,25 @@ public class RoomServiceImpl implements RoomService{
         Room room = modelMapper.map(roomRequestDto,Room.class);
         room.setHotel(hotel);
         room = roomRepository.save(room);
-        System.out.println("ROOM ID = " + room.getId());
+
+        //Create kro inventory as soon as room is created and hotel is Active
+        if(hotel.isActive()){
+            inventoryService.InitializeRoomForYear(room);
+
+        }
 
         return modelMapper.map(room,RoomResponseDto.class);
     }
 
     @Override
+    @Transactional
     public void DeleteRoomById(Long roomId) {
         log.info("Deleting Room in Hotel with Id : {}",roomId);
-        boolean exists = roomRepository.existsById(roomId);
-        if(!exists){
-            throw new ResourceNotFoundException("Room Does not Exist With Id : "+roomId);
-        }
+        Room room = roomRepository.findById(roomId).
+                orElseThrow(()->new ResourceNotFoundException("Room Does not Exist with this Id"+roomId));
+        inventoryService.deleteFutureInventories(room);
         roomRepository.deleteById(roomId);
+
 
 
 
@@ -68,7 +77,5 @@ public class RoomServiceImpl implements RoomService{
                 .stream()
                 .map((element) ->modelMapper.map(element,RoomResponseDto.class))
                 .collect(Collectors.toList());
-
-
     }
 }

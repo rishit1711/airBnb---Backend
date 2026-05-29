@@ -4,7 +4,9 @@ import com.example.Project_Rishit.airBnbApp.Exceptions.ResourceNotFoundException
 import com.example.Project_Rishit.airBnbApp.dto.HotelRequestDto;
 import com.example.Project_Rishit.airBnbApp.dto.HotelResponseDto;
 import com.example.Project_Rishit.airBnbApp.entity.Hotel;
+import com.example.Project_Rishit.airBnbApp.entity.Room;
 import com.example.Project_Rishit.airBnbApp.repository.HotelRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class HotelServiceImpl implements HotelService{
         private final HotelRepository hotelRepository;
         private final ModelMapper modelMapper;
+        private  final InventoryService inventoryService;
 
 
 
@@ -48,19 +51,30 @@ public class HotelServiceImpl implements HotelService{
     }
 
     @Override
-    public boolean DeleteById(Long id) {
-        boolean isExist = hotelRepository.existsById(id);
-        if(!isExist) throw new ResourceNotFoundException("Hotel Does not exist with Id:"+id);
+    @Transactional
+    public void DeleteById(Long id) {
+        Hotel hotel = hotelRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Hotel Does not Exits"));
         hotelRepository.deleteById(id);
-        return  true;
+
+        // Deleting Future Inventory
+        for(Room room : hotel.getRooms()){
+            inventoryService.deleteFutureInventories(room);
+        }
+
+
     }
 
     @Override
+    @Transactional
     public void ActivateHotel(Long id) {
         log.info("Activating the Hotel with Id : {}",id);
         Hotel hotel = hotelRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Hotel Does not Exits"));
         hotel.setActive(true);
         hotelRepository.save(hotel);
+
+        for(Room room : hotel.getRooms()){
+            inventoryService.InitializeRoomForYear(room);
+        }
 
     }
 
