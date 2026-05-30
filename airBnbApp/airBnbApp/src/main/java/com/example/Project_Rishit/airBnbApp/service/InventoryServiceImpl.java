@@ -1,10 +1,15 @@
 package com.example.Project_Rishit.airBnbApp.service;
 
+import com.example.Project_Rishit.airBnbApp.dto.HotelResponseDto;
+import com.example.Project_Rishit.airBnbApp.dto.HotelSearchRequest;
 import com.example.Project_Rishit.airBnbApp.entity.Inventory;
 import com.example.Project_Rishit.airBnbApp.entity.Room;
 import com.example.Project_Rishit.airBnbApp.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -40,6 +45,12 @@ public class InventoryServiceImpl implements InventoryService{
         }
 
     }
+
+    @Override
+    public Page<HotelResponseDto> SearchHotels(HotelSearchRequest searchRequest) {
+        Pageable pageable = PageRequest.of(searchRequest.getPage(), searchRequest.getSize());
+    }
+
     @Override
     public void deleteFutureInventories(Room room) {
         LocalDate today = LocalDate.now();

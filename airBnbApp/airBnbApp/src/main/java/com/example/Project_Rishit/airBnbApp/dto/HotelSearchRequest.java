@@ -4,16 +4,22 @@ import com.example.Project_Rishit.airBnbApp.entity.HotelContactInfo;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
+
 
 @Data
 @RequiredArgsConstructor
-public class HotelRequestDto {
-
-    private String name;
+public class HotelSearchRequest {
     private  String city;
-    private String[] photos;
-    private String[] amenities;
-    private HotelContactInfo contactInfo;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private Integer roomsCount;
+
+    private Integer page=0;
+    private Integer size=10;
+
+
+
 
 
 

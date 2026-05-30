@@ -7,7 +7,6 @@ import com.example.Project_Rishit.airBnbApp.entity.Hotel;
 import com.example.Project_Rishit.airBnbApp.entity.Room;
 import com.example.Project_Rishit.airBnbApp.repository.HotelRepository;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;

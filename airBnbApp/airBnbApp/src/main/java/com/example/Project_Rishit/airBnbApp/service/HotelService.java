@@ -9,11 +9,10 @@ public interface HotelService {
 
     HotelResponseDto getHotelById(Long id);
 
-    HotelResponseDto updateHotelById(Long id,HotelRequestDto hotelRequestDto);
+    HotelResponseDto updateHotelById(Long id, HotelRequestDto hotelRequestDto);
 
     void DeleteById(Long id);
 
     void ActivateHotel(Long id);
 
 }
-
