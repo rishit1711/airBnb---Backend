@@ -1,7 +1,9 @@
 package com.example.Project_Rishit.airBnbApp.service;
 
+import com.example.Project_Rishit.airBnbApp.dto.HotelInfoDto;
 import com.example.Project_Rishit.airBnbApp.dto.HotelRequestDto;
 import com.example.Project_Rishit.airBnbApp.dto.HotelResponseDto;
+import org.jspecify.annotations.Nullable;
 
 
 public interface HotelService {
@@ -15,4 +17,5 @@ public interface HotelService {
 
     void ActivateHotel(Long id);
 
+     HotelInfoDto GetInfoAboutHotel(Long hotelId);
 }

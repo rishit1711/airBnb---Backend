@@ -1,16 +1,21 @@
 package com.example.Project_Rishit.airBnbApp.service;
 
 import com.example.Project_Rishit.airBnbApp.Exceptions.ResourceNotFoundException;
+import com.example.Project_Rishit.airBnbApp.dto.HotelInfoDto;
 import com.example.Project_Rishit.airBnbApp.dto.HotelRequestDto;
 import com.example.Project_Rishit.airBnbApp.dto.HotelResponseDto;
+import com.example.Project_Rishit.airBnbApp.dto.RoomResponseDto;
 import com.example.Project_Rishit.airBnbApp.entity.Hotel;
 import com.example.Project_Rishit.airBnbApp.entity.Room;
 import com.example.Project_Rishit.airBnbApp.repository.HotelRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -72,8 +77,17 @@ public class HotelServiceImpl implements HotelService{
         hotelRepository.save(hotel);
 
         for(Room room : hotel.getRooms()){
-            inventoryService.InitializeRoomForYear(room);
+            inventoryService.InitializeRoomForMonth(room);
         }
+
+    }
+
+    @Override
+    public  HotelInfoDto GetInfoAboutHotel(Long hotelId) {
+        Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(()->new ResourceNotFoundException("Hotel Does not exist with id"+hotelId));
+        List<RoomResponseDto> rooms = hotel.getRooms().stream().map((element) ->modelMapper.map(element,RoomResponseDto.class)).toList();
+        return new HotelInfoDto(modelMapper.map(hotel,HotelResponseDto.class),rooms);
+
 
     }
 

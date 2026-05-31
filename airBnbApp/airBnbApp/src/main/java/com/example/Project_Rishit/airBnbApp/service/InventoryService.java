@@ -6,7 +6,7 @@ import com.example.Project_Rishit.airBnbApp.entity.Room;
 import org.springframework.data.domain.Page;
 
 public interface InventoryService {
-    void InitializeRoomForYear(Room room);
+    void InitializeRoomForMonth(Room room);
     void deleteFutureInventories(Room room);
 
     Page<HotelResponseDto> SearchHotels(HotelSearchRequest searchRequest);

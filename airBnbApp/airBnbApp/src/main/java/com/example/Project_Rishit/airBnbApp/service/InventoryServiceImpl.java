@@ -28,9 +28,9 @@ public class InventoryServiceImpl implements InventoryService{
 
 
     @Override
-    public void InitializeRoomForYear(Room room) {
+    public void InitializeRoomForMonth(Room room) {
         LocalDate today =LocalDate.now();
-        LocalDate endDate = today.plusYears(1);
+        LocalDate endDate = today.plusMonths(1);
         while (!today.isAfter(endDate)) {
             Inventory inventory = Inventory.builder()
                     .hotel(room.getHotel() )

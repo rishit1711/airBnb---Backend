@@ -38,7 +38,7 @@ public class RoomServiceImpl implements RoomService{
 
         //Create kro inventory as soon as room is created and hotel is Active
         if(hotel.isActive()){
-            inventoryService.InitializeRoomForYear(room);
+            inventoryService.InitializeRoomForMonth(room);
 
         }
 
