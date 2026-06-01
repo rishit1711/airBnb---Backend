@@ -42,7 +42,7 @@ HAVING COUNT(i.date) = :dateCount
             FROM Inventory i
             WHERE i.room.id = :roomId
             AND i.date BETWEEN :startDate AND :endDate
-            AND (i.totalCount - i.bookedCount) >= :roomsCount
+            AND (i.totalCount - i.bookedCount - i.reservedCount) >= :roomsCount
             AND i.closed = false
             """)
     @Lock(LockModeType.PESSIMISTIC_WRITE)

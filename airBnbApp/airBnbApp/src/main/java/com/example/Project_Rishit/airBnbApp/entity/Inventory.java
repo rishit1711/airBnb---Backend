@@ -47,4 +47,7 @@ public class Inventory {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime UpdatedAt;
+
+    @Column(nullable = false,precision = 10,scale = 2)
+    private Integer reservedCount;
 }

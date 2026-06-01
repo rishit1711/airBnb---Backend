@@ -45,5 +45,7 @@ public class Booking {
     private Set<Guest> guest;
     @Column(nullable = false,precision = 10,scale = 2)
     private BigDecimal Amount;
+    private LocalDateTime createdAt;
+
 
 }
