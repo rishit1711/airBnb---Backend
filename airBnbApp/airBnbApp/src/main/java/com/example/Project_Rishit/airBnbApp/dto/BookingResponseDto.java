@@ -1,28 +1,38 @@
 package com.example.Project_Rishit.airBnbApp.dto;
 
-import com.example.Project_Rishit.airBnbApp.entity.Guest;
-import com.example.Project_Rishit.airBnbApp.entity.Hotel;
-import com.example.Project_Rishit.airBnbApp.entity.Room;
-import com.example.Project_Rishit.airBnbApp.entity.User;
+
 import com.example.Project_Rishit.airBnbApp.entity.enums.BookingStatus;
+import lombok.Data;
 
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDateTime;
-import java.util.Set;
+import java.time.LocalDate;
+
+
+@Data
+
 
 public class BookingResponseDto {
-    private Long Id;
-    private Hotel hotel;
-    private Room room;
-    private User user;
+
+    private Long bookingId;
+
+    private Long hotelId;
+    private String hotelName;
+
+    private Long roomId;
+    private String roomType;
+
+    private Long userId;
+    private String userName;
+
     private Integer totalRooms;
-    private LocalDateTime CheckIn;
-    private LocalDateTime CheckOut;
+
+    private LocalDate checkIn;
+    private LocalDate checkOut;
+
     private BookingStatus bookingStatus;
+
     private BigDecimal amount;
-
-    private Set<Guest> guest;
-
 }
+
+
