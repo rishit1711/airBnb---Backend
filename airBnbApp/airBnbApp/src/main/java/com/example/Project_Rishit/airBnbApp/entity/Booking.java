@@ -2,17 +2,21 @@ package com.example.Project_Rishit.airBnbApp.entity;
 
 import com.example.Project_Rishit.airBnbApp.entity.enums.BookingStatus;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,13 +35,15 @@ public class Booking {
     private Integer totalRooms;
     @CreationTimestamp
     @Column(nullable = false)
-    private LocalDateTime CheckIn;
+    private LocalDate CheckIn;
     @UpdateTimestamp
     @Column(nullable = false)
-    private LocalDateTime CheckOut;
+    private LocalDate CheckOut;
     @Enumerated(EnumType.STRING)
     private BookingStatus bookingStatus;
     @OneToMany(fetch = FetchType.LAZY)
     private Set<Guest> guest;
+    @Column(nullable = false,precision = 10,scale = 2)
+    private BigDecimal Amount;
 
 }
