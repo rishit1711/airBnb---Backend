@@ -40,17 +40,14 @@ HAVING COUNT(i.date) = :dateCount
     @Query("""
             SELECT i
             FROM Inventory i
-            WHERE i.room.id =: roomId
+            WHERE i.room.id = :roomId
             AND i.date BETWEEN :startDate AND :endDate
             AND (i.totalCount - i.bookedCount) >= :roomsCount
             AND i.closed = false
-            
-      
-            
             """)
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<Inventory> findAndLockAvailableInventory(
-            @Param("roomId") Long roomID,
+            @Param("roomId") Long roomId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate,
             @Param(("roomsCount"))Integer roomsCount

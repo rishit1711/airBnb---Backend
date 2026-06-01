@@ -13,7 +13,10 @@ public class BookingRequestDto {
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private Integer roomCount;
-    private Integer guestCount;
+
+
+
+
 
 
 }

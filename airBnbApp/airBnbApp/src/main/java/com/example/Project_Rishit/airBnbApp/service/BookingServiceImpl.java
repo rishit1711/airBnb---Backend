@@ -13,8 +13,10 @@ import jakarta.transaction.Transactional;
 import jdk.jfr.Registered;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class BookingServiceImpl implements BookingService{
     private  final HotelRepository hotelRepository;
     private final RoomRepository roomRepository;
     private final InventoryRepository inventoryRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     @Transactional
@@ -37,7 +40,7 @@ public class BookingServiceImpl implements BookingService{
         List<Inventory> inventoryList=inventoryRepository.findAndLockAvailableInventory(requestDto.getRoomId(), requestDto.getCheckInDate(),requestDto.getCheckOutDate(), requestDto.getRoomCount());
         long dateCount  = ChronoUnit.DAYS.between(requestDto.getCheckInDate(),requestDto.getCheckOutDate());
         if(inventoryList.size()<dateCount){
-           return new ResourceNotFoundException();
+           throw  new ResourceNotFoundException("Room Not Available for all Dates");
         }
         for(Inventory inventory : inventoryList){
             inventory.setBookedCount(inventory.getBookedCount()+requestDto.getRoomCount());
@@ -48,6 +51,7 @@ public class BookingServiceImpl implements BookingService{
         user.setId(1L);
         user.setName("Rishit");
         user.setEmail("rishit123@gmail.com");
+        user.setPassword("rishit123");
 
         // Creating the booking
         Booking booking = Booking.builder()
@@ -58,8 +62,12 @@ public class BookingServiceImpl implements BookingService{
                 .CheckOut(requestDto.getCheckOutDate())
                 .totalRooms(requestDto.getRoomCount())
                 .user(user)
-
+                .Amount(BigDecimal.TEN)
                 .build();
+
+
+        booking=bookingRepository.save(booking);
+        return modelMapper.map(booking,BookingResponseDto.class);
 
 
     }

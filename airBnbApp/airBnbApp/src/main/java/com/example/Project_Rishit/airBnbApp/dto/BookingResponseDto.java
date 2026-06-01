@@ -7,6 +7,8 @@ import com.example.Project_Rishit.airBnbApp.entity.User;
 import com.example.Project_Rishit.airBnbApp.entity.enums.BookingStatus;
 
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -19,6 +21,7 @@ public class BookingResponseDto {
     private LocalDateTime CheckIn;
     private LocalDateTime CheckOut;
     private BookingStatus bookingStatus;
+    private BigDecimal amount;
 
     private Set<Guest> guest;
 
