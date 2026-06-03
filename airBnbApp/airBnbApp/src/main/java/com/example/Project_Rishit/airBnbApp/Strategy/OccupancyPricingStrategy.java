@@ -12,7 +12,7 @@ public class OccupancyPricingStrategy implements PricingStrategy{
     @Override
     public BigDecimal CalculatePrice(Inventory inventory) {
         BigDecimal price = wrapped.CalculatePrice(inventory);
-        double occupancyRate=inventory.getBookedCount()/ inventory.getTotalCount();
+        double occupancyRate=(double) inventory.getBookedCount()/ inventory.getTotalCount();
         if(occupancyRate>0.8){
             price=price.multiply(BigDecimal.valueOf(1.2));
         }
