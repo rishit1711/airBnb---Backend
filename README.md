@@ -1,124 +1,93 @@
-Airbnb Backend Clone
+# Airbnb Backend Clone
 
-A production-inspired hotel booking backend system built using Spring Boot.
+A production-inspired hotel booking backend built using Spring Boot that focuses on real-world backend engineering challenges such as inventory management, concurrent bookings, dynamic pricing, booking lifecycle management, and payment processing.
 
-This project focuses on solving real-world backend engineering problems like:
+## Features
 
-Inventory management
-Concurrent bookings
-Dynamic pricing
-Booking lifecycle management
-Payment workflow handling
+**Authentication & Authorization**
 
-Instead of building a basic CRUD app, this project is designed around how actual hotel booking systems work internally.
+* JWT-based authentication
+* Role-based access control (User & Hotel Manager)
 
-Features
-Authentication & Authorization
-JWT-based authentication
-Role-based access control
-User & Hotel Manager roles
-Hotel Management
-Create and manage hotels
-Manage room types
-Add amenities and photos
-Inventory Management
-Date-wise room availability
-Prevent overbooking
-Room locking mechanism
-Surge pricing support
-Booking System
-Hotel search
-Room booking workflow
-Guest management
-Booking status lifecycle
-Payment Module
-Payment integration
-Transaction tracking
-Payment status handling
-Dynamic Pricing Engine
+**Hotel Management**
 
-Pricing strategies based on:
+* Create and manage hotels
+* Manage room types, amenities, and photos
 
-Occupancy
-Urgency
-Holidays
-Discounts
-Tech Stack
-Java
-Spring Boot
-Spring Security
-Spring Data JPA
-Hibernate
-PostgreSQL
-Maven
-JWT
-Architecture Highlights
-Layered Architecture
-Strategy Design Pattern
-Inventory-driven booking system
-Transaction management
-Scheduler / Cron Jobs
-REST APIs
-Database Design
-Core Entities
-User
-Hotel
-Room
-Inventory
-Booking
-Guest
-Payment
+**Inventory Management**
 
-The system uses an inventory-based approach to handle:
+* Date-wise room availability
+* Inventory locking mechanism
+* Overbooking prevention
 
-Date-wise availability
-Concurrent bookings
-Dynamic room pricing
-Booking Flow
+**Booking System**
+
+* Hotel search
+* Room booking workflow
+* Guest management
+* Booking lifecycle handling
+
+**Payment Module**
+
+* Payment processing
+* Transaction tracking
+* Payment status management
+
+**Dynamic Pricing**
+
+* Occupancy-based pricing
+* Urgency pricing
+* Holiday pricing
+* Discount strategies
+
+## Tech Stack
+
+Java • Spring Boot • Spring Security • Spring Data JPA • Hibernate • PostgreSQL • Maven • JWT
+
+## Architecture Highlights
+
+* Layered Architecture
+* Strategy Design Pattern
+* Inventory-Driven Booking System
+* Transaction Management
+* REST APIs
+
+## Core Entities
+
+User • Hotel • Room • Inventory • Booking • Guest • Payment
+
+## Booking Flow
+
+```text
 Search Hotel
-      ↓
+    ↓
 Check Inventory
-      ↓
+    ↓
 Create Booking
-      ↓
-Lock Rooms
-      ↓
+    ↓
+Lock Inventory
+    ↓
 Process Payment
-      ↓
+    ↓
 Confirm Booking
-Future Improvements
-Redis caching
-Docker support
-Kafka event-driven architecture
-Elasticsearch-based hotel search
-Microservices migration
-Goal of This Project
+```
 
-The goal of this project is to understand how scalable booking systems work internally instead of building another basic CRUD application.
+## Future Improvements
 
-This project focuses on backend engineering concepts such as:
+* Redis Caching
+* Kafka Integration
+* Docker Support
+* Elasticsearch Search
+* Microservices Migration
 
-Concurrency handling
-Inventory management
-Transaction consistency
-Pricing strategies
-Scalable system design
-Real-world booking workflows
-Why This Project Matters
+## Learning Outcomes
 
-Most beginner backend projects stop at CRUD operations.
+* Inventory Management
+* Concurrent Booking Handling
+* Transaction Consistency
+* Dynamic Pricing Systems
+* Scalable Backend Design
 
-This project goes beyond that by implementing concepts commonly used in real-world booking platforms like:
+## Purpose
 
-Inventory locking
-Booking lifecycle handling
-Dynamic pricing systems
-Transaction management
-Concurrent booking prevention
-
-This makes the project significantly stronger for:
-
-Backend development learning
-Internship resume projects
-Understanding scalable system design
-Spring Boot backend fundamentals
+This project was built to understand how real-world booking systems handle inventory, pricing, reservations, and payments beyond basic CRUD operations.
