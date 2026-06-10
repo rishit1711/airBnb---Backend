@@ -11,12 +11,15 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -29,10 +32,18 @@ public class BookingServiceImpl implements BookingService{
     private final InventoryRepository inventoryRepository;
     private final GuestRepository guestRepository;
     private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
     public BookingResponseDto initialiseBooking(BookingRequestDto requestDto) {
+
+
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        String email =auth.getName();
+        User user  = userRepository.findByEmail(email).orElseThrow(()-> new NoSuchElementException("User not found"));
         log.info("Initialising Booking for Room in a hotel with HotelId{}",requestDto.getHotelId());
         Hotel hotel = hotelRepository.findById(requestDto.getHotelId()).orElseThrow(()->new ResourceNotFoundException("Hotel Does not exist with Id"+requestDto.getHotelId()));
         Room room = roomRepository.findById(requestDto.getRoomId()).orElseThrow(()->new ResourceNotFoundException("Room Does not exist with Id"+requestDto.getRoomId()));
@@ -46,11 +57,6 @@ public class BookingServiceImpl implements BookingService{
         }
         inventoryRepository.saveAll(inventoryList);
 
-        User user = new User();
-        user.setId(1L);
-        user.setName("Rishit");
-        user.setEmail("rishit123@gmail.com");
-        user.setPassword("rishit123");
 
         // Creating the booking
         Booking booking = Booking.builder()

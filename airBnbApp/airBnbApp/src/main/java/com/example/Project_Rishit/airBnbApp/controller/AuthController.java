@@ -5,6 +5,8 @@ import com.example.Project_Rishit.airBnbApp.dto.LoginRequestDto;
 import com.example.Project_Rishit.airBnbApp.dto.LoginResponseDto;
 import com.example.Project_Rishit.airBnbApp.dto.SignUpRequestDto;
 import com.example.Project_Rishit.airBnbApp.dto.UserResponseDto;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +27,15 @@ public class AuthController {
         return ResponseEntity.ok(responseDto);
     }
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto){
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto, HttpServletResponse httpServletResponse){
        String[] tokens = authService.signIn(requestDto);
 
        // store kro referesh token ko cookie me
+
+        Cookie cookie = new Cookie("refreshToken",tokens[1]);
+        cookie.setHttpOnly(true);
+        httpServletResponse.addCookie(cookie);
+        return ResponseEntity.ok(new LoginResponseDto(tokens[0]));
 
 
     }

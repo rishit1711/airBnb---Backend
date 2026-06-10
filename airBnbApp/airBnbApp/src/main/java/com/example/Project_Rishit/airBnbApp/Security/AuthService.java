@@ -38,7 +38,10 @@ public class AuthService {
         return modelMapper.map(newUser, UserResponseDto.class);
     }
     public String[] signIn(@RequestBody LoginRequestDto loginRequestDto){
-       Authentication authentication= authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(),loginRequestDto.getPassWord()));
+
+
+       Authentication authentication= authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(),loginRequestDto.getPassword()));
+
        User user = (User) authentication.getPrincipal();
        String[] arr = new String[2];
        arr[0]= jwtService.GenerateAccessToken(user);
