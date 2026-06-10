@@ -1,6 +1,7 @@
 package com.example.Project_Rishit.airBnbApp.service;
 
 import com.example.Project_Rishit.airBnbApp.Exceptions.ResourceNotFoundException;
+import com.example.Project_Rishit.airBnbApp.Exceptions.UnauthorizedException;
 import com.example.Project_Rishit.airBnbApp.dto.BookingRequestDto;
 import com.example.Project_Rishit.airBnbApp.dto.BookingResponseDto;
 import com.example.Project_Rishit.airBnbApp.dto.GuestDto;
@@ -11,6 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -36,14 +38,12 @@ public class BookingServiceImpl implements BookingService{
 
     @Override
     @Transactional
+
     public BookingResponseDto initialiseBooking(BookingRequestDto requestDto) {
 
 
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        String email =auth.getName();
-        User user  = userRepository.findByEmail(email).orElseThrow(()-> new NoSuchElementException("User not found"));
         log.info("Initialising Booking for Room in a hotel with HotelId{}",requestDto.getHotelId());
         Hotel hotel = hotelRepository.findById(requestDto.getHotelId()).orElseThrow(()->new ResourceNotFoundException("Hotel Does not exist with Id"+requestDto.getHotelId()));
         Room room = roomRepository.findById(requestDto.getRoomId()).orElseThrow(()->new ResourceNotFoundException("Room Does not exist with Id"+requestDto.getRoomId()));
@@ -66,7 +66,7 @@ public class BookingServiceImpl implements BookingService{
                 .CheckIn(requestDto.getCheckInDate())
                 .CheckOut(requestDto.getCheckOutDate())
                 .totalRooms(requestDto.getRoomCount())
-                .user(user)
+                .user(getUser())
                 .Amount(BigDecimal.TEN)
                 .build();
 
@@ -82,6 +82,11 @@ public class BookingServiceImpl implements BookingService{
     public  BookingResponseDto addGuest(Long bookingId, List<GuestDto> guestDtoList) {
         log.info("Adding Guest in a Booking with Booking ID : {}",bookingId);
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(()->new ResourceNotFoundException("Booking with this Id Not found"));
+
+        User user = getUser();
+        if(!user.equals(booking.getUser())){
+            throw new UnauthorizedException("Booking Guest does not macth the Logged in Guest :"+user.getEmail());
+        }
 
         if(isBookingExpired(booking)){
             throw new IllegalStateException("Booking has been Expired");
@@ -107,5 +112,8 @@ public class BookingServiceImpl implements BookingService{
     public boolean isBookingExpired(Booking booking){
         return booking.getCreatedAt().plusMinutes(10).isBefore(LocalDateTime.now());
 
+    }
+    public User getUser(){
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

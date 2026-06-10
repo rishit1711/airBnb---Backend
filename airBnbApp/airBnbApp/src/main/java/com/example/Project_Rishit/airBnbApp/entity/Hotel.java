@@ -41,6 +41,8 @@ public class Hotel {
     private HotelContactInfo contactInfo;
     @Column(nullable = false)
     private boolean isActive;
+    @ManyToOne(optional = false)
+    private User owner;
 
     @OneToMany(mappedBy ="hotel" )
     private List<Room> rooms;
