@@ -6,6 +6,7 @@ import com.example.Project_Rishit.airBnbApp.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping
+    @PreAuthorize("hasRole('HOTEL_MANAGER')")
     public ResponseEntity<RoomResponseDto> CreateRoomInHotel(@PathVariable Long hotelId,@RequestBody RoomRequestDto roomRequestDto){
         RoomResponseDto responseDto = roomService.CreateNewRoom(hotelId,roomRequestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
@@ -34,6 +36,7 @@ public class RoomController {
        return ResponseEntity.ok(responseDto);
     }
     @DeleteMapping("/{roomId}")
+    @PreAuthorize("hasRole('HOTEL_MANAGER')")
     public ResponseEntity<Void> DeleteRoom(@PathVariable Long roomId){
         roomService.DeleteRoomById(roomId);
         return ResponseEntity.noContent().build();

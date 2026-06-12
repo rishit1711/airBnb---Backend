@@ -9,6 +9,7 @@ import com.example.Project_Rishit.airBnbApp.dto.RoomResponseDto;
 import com.example.Project_Rishit.airBnbApp.entity.Hotel;
 import com.example.Project_Rishit.airBnbApp.entity.Room;
 import com.example.Project_Rishit.airBnbApp.entity.User;
+import com.example.Project_Rishit.airBnbApp.entity.enums.Role;
 import com.example.Project_Rishit.airBnbApp.repository.HotelRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -100,9 +101,17 @@ public class HotelServiceImpl implements HotelService{
         log.info("Activating the Hotel with Id : {}",id);
         Hotel hotel = hotelRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Hotel Does not Exits"));
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(!user.equals(hotel.getOwner())){
+
+        if(!user.getRoles().contains(Role.HOTEL_MANAGER)){
+            throw new UnauthorizedException("You are not the Hotel Manager");
+
+        }
+
+        if(!hotel.getOwner().getId().equals(user.getId())){
             throw new UnauthorizedException("You are not the owner of this hotel");
         }
+//
+
 
 
         hotel.setActive(true);

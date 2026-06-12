@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class HotelController {
     private final HotelService hotelService;
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('HOTEL_MANAGER')")
     @PostMapping
     public ResponseEntity<HotelResponseDto> CreateHotel(@RequestBody HotelRequestDto requestDto){
         log.info("Attempting to Create a Hotel :"+requestDto.getName());
@@ -30,20 +30,20 @@ public class HotelController {
         HotelResponseDto hotelResponseDto = hotelService.getHotelById(HotelId);
         return ResponseEntity.ok(hotelResponseDto);
     }
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('HOTEL_MANAGER')")
     @PutMapping("/{HotelId}")
     public ResponseEntity<HotelResponseDto> UpdateHotelById(@PathVariable Long HotelId,@RequestBody HotelRequestDto requestDto){
         log.info("Attempting to Update a Hotel :"+requestDto.getName());
         HotelResponseDto responseDto = hotelService.updateHotelById(HotelId,requestDto);
         return ResponseEntity.ok(responseDto);
     }
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('HOTEL_MANAGER')")
     @DeleteMapping("/{HotelId}")
     public ResponseEntity<Void> DeleteHotelById(@PathVariable Long HotelId){
         hotelService.DeleteById(HotelId);
         return ResponseEntity.noContent().build();
     }
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('HOTEL_MANAGER')")
     @PatchMapping("/{HotelId}")
     public ResponseEntity<Void> ActivateHotel(@PathVariable Long HotelId){
         hotelService.ActivateHotel(HotelId);
