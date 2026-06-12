@@ -29,6 +29,8 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("HOTEL_MANAGER")
                         .requestMatchers("/bookings/**").authenticated()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/hotels/**").permitAll()
+
                         .anyRequest().permitAll()
 
                 );

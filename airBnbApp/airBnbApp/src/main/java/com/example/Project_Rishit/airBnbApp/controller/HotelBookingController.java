@@ -9,6 +9,7 @@ import com.example.Project_Rishit.airBnbApp.service.BookingService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class HotelBookingController {
     private final BookingService bookingService;
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/init")
     public ResponseEntity<BookingResponseDto> initialiseBooking(@RequestBody BookingRequestDto requestDto){
         return ResponseEntity.ok(bookingService.initialiseBooking(requestDto));
