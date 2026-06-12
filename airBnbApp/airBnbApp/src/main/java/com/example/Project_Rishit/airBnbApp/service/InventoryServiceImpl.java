@@ -42,7 +42,8 @@ public class InventoryServiceImpl implements InventoryService{
                     .surgeFactor(BigDecimal.ONE)
                     .totalCount(room.getTotalCount())
                     .closed(false)
-                    .build();
+                    .reservedCount(0)
+                            .build();
 
             inventoryRepository.save(inventory);
             today = today.plusDays(1);
@@ -61,7 +62,7 @@ public class InventoryServiceImpl implements InventoryService{
     @Override
     public void deleteFutureInventories(Room room) {
         LocalDate today = LocalDate.now();
-        inventoryRepository.deleteByDateAfter(today,room);
+        inventoryRepository.deleteFutureInventories(today,room);
 
 
     }

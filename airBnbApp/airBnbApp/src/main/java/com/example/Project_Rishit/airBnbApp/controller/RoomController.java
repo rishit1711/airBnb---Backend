@@ -25,11 +25,13 @@ public class RoomController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 
     }
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<List<RoomResponseDto>> GetAllRooms(@PathVariable Long hotelId){
         List<RoomResponseDto> responseDto=roomService.getAllRoomsInHotel(hotelId);
         return ResponseEntity.ok(responseDto);
     }
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(path = "/{roomId}")
     public ResponseEntity<RoomResponseDto> GetRoomById(@PathVariable Long roomId){
        RoomResponseDto responseDto= roomService.GetRoomById(roomId);

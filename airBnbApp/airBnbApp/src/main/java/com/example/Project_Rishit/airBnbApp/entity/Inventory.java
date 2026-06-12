@@ -48,6 +48,6 @@ public class Inventory {
     @UpdateTimestamp
     private LocalDateTime UpdatedAt;
 
-    @Column(nullable = false,precision = 10,scale = 2)
+    @Column(precision = 10,scale = 2)
     private Integer reservedCount;
 }

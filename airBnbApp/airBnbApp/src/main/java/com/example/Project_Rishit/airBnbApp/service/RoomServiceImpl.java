@@ -36,8 +36,11 @@ public class RoomServiceImpl implements RoomService{
         Hotel hotel = hotelRepository.findById(hotelId).
                 orElseThrow(()->new ResourceNotFoundException("Hotel Does not Exist with this Id"+hotelId));
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(!user.equals(hotel.getOwner())){
-            throw new UnauthorizedException("You are not the owner of this hotel");
+//        if(!user.equals(hotel.getOwner())){
+//            throw new UnauthorizedException("You are not the owner of this hotel");
+//        }
+        if(!user.getId().equals(hotel.getOwner().getId())){
+            throw new UnauthorizedException("You are Not Authorized to Create Rooms");
         }
 
 
@@ -62,8 +65,8 @@ public class RoomServiceImpl implements RoomService{
         Room room = roomRepository.findById(roomId).
                 orElseThrow(()->new ResourceNotFoundException("Room Does not Exist with this Id"+roomId));
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(!user.equals(room.getHotel().getOwner())){
-            throw new UnauthorizedException("You are not the owner of thi hotel");
+        if(!user.getId().equals(room.getHotel().getOwner().getId())){
+            throw new UnauthorizedException("You are Not Authorized to Create Rooms");
         }
         inventoryService.deleteFutureInventories(room);
         roomRepository.deleteById(roomId);

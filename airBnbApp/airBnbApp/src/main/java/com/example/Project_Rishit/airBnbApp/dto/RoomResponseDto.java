@@ -14,6 +14,7 @@ public class RoomResponseDto {
     private String[] photos;
     private String[] amenities;
     private Integer capacity;
+    private Integer reservedCount;
 
 
 }
