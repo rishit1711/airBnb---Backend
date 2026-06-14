@@ -14,4 +14,6 @@ public interface BookingService {
      BookingResponseDto initialiseBooking(BookingRequestDto requestDto);
 
     @Nullable BookingResponseDto addGuest(Long bookingId, List<GuestDto> guestDtoList);
+
+    String initiatePayment(Long bookingId);
 }

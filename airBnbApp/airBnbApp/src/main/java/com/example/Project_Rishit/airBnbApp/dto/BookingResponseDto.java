@@ -2,7 +2,9 @@ package com.example.Project_Rishit.airBnbApp.dto;
 
 
 import com.example.Project_Rishit.airBnbApp.entity.enums.BookingStatus;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 
 import java.math.BigDecimal;
@@ -10,8 +12,8 @@ import java.time.LocalDate;
 
 
 @Data
-
-
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class BookingResponseDto {
 
     private Long bookingId;

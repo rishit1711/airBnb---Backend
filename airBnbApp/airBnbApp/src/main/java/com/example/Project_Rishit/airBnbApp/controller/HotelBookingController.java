@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,5 +31,12 @@ public class HotelBookingController {
     public ResponseEntity<BookingResponseDto> addGuest(@PathVariable Long bookingId, @RequestBody List<GuestDto> guestDtoList){
         return ResponseEntity.ok(bookingService.addGuest(bookingId,guestDtoList));
     }
+    @PostMapping("/{bookingId}/initiatePayments")
+    public ResponseEntity<Map<String,String>> initiatePayments(@PathVariable Long bookingId){
+        String sessionUrl=bookingService.initiatePayment(bookingId);
+        return ResponseEntity.ok(Map.of("SessionUrl",sessionUrl));
+
+    }
+
 
 }
