@@ -116,7 +116,7 @@ public class BookingServiceImpl implements BookingService{
         User user = getUser();
 
         if(!user.equals(booking.getUser())){
-            throw new UnauthorizedException("Booking Guest does not macth the Logged in Guest :"+user.getEmail());
+            throw new UnauthorizedException("Booking Guest does not match the Logged in Guest :"+user.getEmail());
         }
 
         if(isBookingExpired(booking)){
