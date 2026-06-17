@@ -30,6 +30,11 @@ public class SecurityConfig {
                         .requestMatchers("/bookings/**").authenticated()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/hotels/**").permitAll()
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
 
                         .anyRequest().permitAll()
 

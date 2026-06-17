@@ -6,6 +6,7 @@ import com.example.Project_Rishit.airBnbApp.dto.GuestDto;
 import com.example.Project_Rishit.airBnbApp.entity.Booking;
 import com.example.Project_Rishit.airBnbApp.entity.enums.BookingStatus;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Event;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface BookingService {
     @Nullable BookingResponseDto addGuest(Long bookingId, List<GuestDto> guestDtoList);
 
     String initiatePayment(Long bookingId) throws StripeException;
+
+    void capturePayment(Event event);
 }

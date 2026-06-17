@@ -9,6 +9,7 @@ import com.example.Project_Rishit.airBnbApp.entity.*;
 import com.example.Project_Rishit.airBnbApp.entity.enums.BookingStatus;
 import com.example.Project_Rishit.airBnbApp.repository.*;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Event;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -117,6 +118,7 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
+    @Transactional
     public String initiatePayment(Long bookingId) throws StripeException {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(()->new ResourceNotFoundException("Booking Does not Exist with Id : "+bookingId ));
         User user = getUser();
@@ -134,6 +136,12 @@ public class BookingServiceImpl implements BookingService{
         bookingRepository.save(booking);
 
         return sessionUrl;
+    }
+
+    @Override
+    @Transactional
+    public void capturePayment(Event event) {
+
     }
 
     public boolean isBookingExpired(Booking booking){
