@@ -6,6 +6,7 @@ import com.example.Project_Rishit.airBnbApp.dto.GuestDto;
 import com.example.Project_Rishit.airBnbApp.entity.Booking;
 import com.example.Project_Rishit.airBnbApp.entity.Guest;
 import com.example.Project_Rishit.airBnbApp.service.BookingService;
+import com.stripe.exception.StripeException;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class HotelBookingController {
         return ResponseEntity.ok(bookingService.addGuest(bookingId,guestDtoList));
     }
     @PostMapping("/{bookingId}/initiatePayments")
-    public ResponseEntity<Map<String,String>> initiatePayments(@PathVariable Long bookingId){
+    public ResponseEntity<Map<String,String>> initiatePayments(@PathVariable Long bookingId) throws StripeException {
         String sessionUrl=bookingService.initiatePayment(bookingId);
         return ResponseEntity.ok(Map.of("SessionUrl",sessionUrl));
 

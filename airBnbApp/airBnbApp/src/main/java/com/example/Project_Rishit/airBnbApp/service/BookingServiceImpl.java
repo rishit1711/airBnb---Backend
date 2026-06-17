@@ -8,10 +8,12 @@ import com.example.Project_Rishit.airBnbApp.dto.GuestDto;
 import com.example.Project_Rishit.airBnbApp.entity.*;
 import com.example.Project_Rishit.airBnbApp.entity.enums.BookingStatus;
 import com.example.Project_Rishit.airBnbApp.repository.*;
+import com.stripe.exception.StripeException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,14 +37,15 @@ public class BookingServiceImpl implements BookingService{
     private final GuestRepository guestRepository;
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
+    private final CheckOutService checkOutService;
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     @Override
     @Transactional
 
     public BookingResponseDto initialiseBooking(BookingRequestDto requestDto) {
-
-
-
 
         log.info("Initialising Booking for Room in a hotel with HotelId{}",requestDto.getHotelId());
         Hotel hotel = hotelRepository.findById(requestDto.getHotelId()).orElseThrow(()->new ResourceNotFoundException("Hotel Does not exist with Id"+requestDto.getHotelId()));
@@ -67,7 +70,10 @@ public class BookingServiceImpl implements BookingService{
                 .CheckOut(requestDto.getCheckOutDate())
                 .totalRooms(requestDto.getRoomCount())
                 .user(getUser())
-                .Amount(BigDecimal.TEN)
+                .Amount(
+                        room.getBasePrice()
+                                .multiply(BigDecimal.valueOf(requestDto.getRoomCount()))
+                )
                 .build();
 
 
@@ -84,8 +90,8 @@ public class BookingServiceImpl implements BookingService{
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(()->new ResourceNotFoundException("Booking with this Id Not found"));
 
         User user = getUser();
-        if(!user.equals(booking.getUser())){
-            throw new UnauthorizedException("Booking Guest does not macth the Logged in Guest :"+user.getEmail());
+        if(user.getId()!=booking.getUser().getId()){
+            throw new UnauthorizedException("Booking Guest does not match the Logged in Guest :"+user.getEmail());
         }
 
         if(isBookingExpired(booking)){
@@ -111,17 +117,23 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
-    public String initiatePayment(Long bookingId) {
+    public String initiatePayment(Long bookingId) throws StripeException {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(()->new ResourceNotFoundException("Booking Does not Exist with Id : "+bookingId ));
         User user = getUser();
 
-        if(!user.equals(booking.getUser())){
+        if(user.getId()!=booking.getUser().getId()){
             throw new UnauthorizedException("Booking Guest does not match the Logged in Guest :"+user.getEmail());
         }
 
         if(isBookingExpired(booking)){
             throw new IllegalStateException("Booking has been Expired");
         }
+
+        String sessionUrl = checkOutService.getCheckOutSession(bookingId,frontendUrl+"/payments/success",frontendUrl+"/payments/failure");
+        booking.setBookingStatus(BookingStatus.PAYMENT_PENDING);
+        bookingRepository.save(booking);
+
+        return sessionUrl;
     }
 
     public boolean isBookingExpired(Booking booking){

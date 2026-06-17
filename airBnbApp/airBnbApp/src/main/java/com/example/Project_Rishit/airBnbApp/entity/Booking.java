@@ -45,7 +45,10 @@ public class Booking {
     private Set<Guest> guest;
     @Column(nullable = false,precision = 10,scale = 2)
     private BigDecimal Amount;
+    @CreationTimestamp
     private LocalDateTime createdAt;
+    @Column(unique = true)
+    private String stripeSessionId;
 
 
 }
