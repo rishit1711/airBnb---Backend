@@ -38,6 +38,12 @@ public class HotelBookingController {
         return ResponseEntity.ok(Map.of("SessionUrl",sessionUrl));
 
     }
+    @PostMapping("/{bookingId}/cancelBooking")
+    public ResponseEntity<Void> cancel(@PathVariable Long bookingId) throws StripeException {
+        bookingService.CancelBooking(bookingId);
+        return ResponseEntity.noContent().build();
+
+    }
 
 
 }
