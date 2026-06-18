@@ -10,6 +10,7 @@ import com.example.Project_Rishit.airBnbApp.entity.enums.BookingStatus;
 import com.example.Project_Rishit.airBnbApp.repository.*;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
+import com.stripe.model.checkout.Session;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -141,6 +142,20 @@ public class BookingServiceImpl implements BookingService{
     @Override
     @Transactional
     public void capturePayment(Event event) {
+
+        if("checkout.session.completed".equals(event.getType())){
+            Session session = (Session)event.getDataObjectDeserializer().getObject().orElseThrow(null);
+            if(session==null)return;
+
+            String sessionId = session.getId();
+            Booking booking= bookingRepository.findByPaymentSessionId(sessionId).orElseThrow(()->new ResourceNotFoundException("Booking does not exist with session Id :"+sessionId));
+
+            booking.setBookingStatus(BookingStatus.CONFIRMED);
+            bookingRepository.save(booking);
+        }
+        else{
+            log.warn("Unwanted event type {} :",event.getType() );
+        }
 
     }
 
