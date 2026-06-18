@@ -67,4 +67,26 @@ HAVING COUNT(i.date) = :dateCount
             @Param(("roomsCount"))Integer roomsCount
 
     );
+
+    @Modifying
+    @Query("""
+UPDATE Inventory i
+SET i.reservedCount = i.reservedCount - :rooms,
+    i.bookedCount = i.bookedCount + :rooms
+WHERE i.room.id = :roomId
+AND i.date >= :startDate
+AND i.date < :endDate
+AND i.closed = false
+""")
+    int confirmReservation(
+            @Param("roomId") Long roomId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            @Param("rooms") Integer rooms
+    );
+
+
+
+
+
 }

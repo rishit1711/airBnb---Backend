@@ -8,8 +8,11 @@ import com.example.Project_Rishit.airBnbApp.dto.GuestDto;
 import com.example.Project_Rishit.airBnbApp.entity.*;
 import com.example.Project_Rishit.airBnbApp.entity.enums.BookingStatus;
 import com.example.Project_Rishit.airBnbApp.repository.*;
+
+
 import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
+import com.stripe.model.EventDataObjectDeserializer;
 import com.stripe.model.checkout.Session;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -144,20 +147,37 @@ public class BookingServiceImpl implements BookingService{
     public void capturePayment(Event event) {
 
         if("checkout.session.completed".equals(event.getType())){
-            Session session = (Session)event.getDataObjectDeserializer().getObject().orElseThrow(null);
+            EventDataObjectDeserializer dataObjectDeserializer =
+        event.getDataObjectDeserializer();
+
+if (!dataObjectDeserializer.getObject().isPresent()) {
+    log.error("Unable to deserialize Stripe object");
+    return;
+}
+
+Session session = (Session)
+        dataObjectDeserializer.getObject().get();
             if(session==null)return;
 
             String sessionId = session.getId();
-            Booking booking= bookingRepository.findByPaymentSessionId(sessionId).orElseThrow(()->new ResourceNotFoundException("Booking does not exist with session Id :"+sessionId));
+            Booking booking= bookingRepository.findBystripeSessionId(sessionId).orElseThrow(()->new ResourceNotFoundException("Booking does not exist with session Id :"+sessionId));
 
             booking.setBookingStatus(BookingStatus.CONFIRMED);
+//            inventoryRepository.confirmReservation(booking.getRoom().getId(),booking.getCheckIn(),booking.getCheckOut(),booking.getTotalRooms());
+
+
             bookingRepository.save(booking);
+
+            log.info("Booking Confirmed for the Booking Id: " +booking.getId());
         }
         else{
             log.warn("Unwanted event type {} :",event.getType() );
         }
 
     }
+
+
+
 
     public boolean isBookingExpired(Booking booking){
         return booking.getCreatedAt().plusMinutes(10).isBefore(LocalDateTime.now());
