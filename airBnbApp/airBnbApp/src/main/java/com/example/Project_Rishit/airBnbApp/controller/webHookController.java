@@ -26,6 +26,9 @@ public class webHookController {
 
          try{
              Event event = Webhook.constructEvent(Payload,sigheader,endPointSecret);
+             log.info("Event Type = {}", event.getType());
+             log.info("API Version = {}", event.getApiVersion());
+             log.info("Data Object = {}", event.getData());
              bookingService.capturePayment(event);
              return ResponseEntity.noContent().build();
 

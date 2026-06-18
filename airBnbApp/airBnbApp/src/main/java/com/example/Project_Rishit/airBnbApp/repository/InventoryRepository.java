@@ -78,7 +78,24 @@ AND i.date >= :startDate
 AND i.date < :endDate
 AND i.closed = false
 """)
-    int confirmReservation(
+    void confirmReservation(
+            @Param("roomId") Long roomId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            @Param("rooms") Integer rooms
+    );
+
+    @Modifying
+    @Query("""
+UPDATE Inventory i
+
+    SET i.bookedCount = i.bookedCount - :rooms
+WHERE i.room.id = :roomId
+AND i.date >= :startDate
+AND i.date < :endDate
+AND i.closed = false
+""")
+    void cancelReservation(
             @Param("roomId") Long roomId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate,

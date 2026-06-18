@@ -13,14 +13,14 @@ import com.example.Project_Rishit.airBnbApp.repository.*;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
+import com.stripe.model.Refund;
 import com.stripe.model.checkout.Session;
+import com.stripe.param.RefundCreateParams;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -142,41 +141,91 @@ public class BookingServiceImpl implements BookingService{
         return sessionUrl;
     }
 
-    @Override
-    @Transactional
-    public void capturePayment(Event event) {
 
-        if("checkout.session.completed".equals(event.getType())){
-            EventDataObjectDeserializer dataObjectDeserializer =
-        event.getDataObjectDeserializer();
 
-if (!dataObjectDeserializer.getObject().isPresent()) {
-    log.error("Unable to deserialize Stripe object");
-    return;
+@Override
+@Transactional
+public void capturePayment(Event event) {
+
+    if ("checkout.session.completed".equals(event.getType())) {
+
+        EventDataObjectDeserializer deserializer =
+                event.getDataObjectDeserializer();
+
+        Session session;
+
+        try {
+            session = (Session) deserializer.deserializeUnsafe();
+        } catch (Exception e) {
+            log.error("Failed to deserialize session", e);
+            return;
+        }
+
+        if (session == null) {
+            log.error("Session is null");
+            return;
+        }
+
+        String sessionId = session.getId();
+
+        log.info("Stripe Session Id : {}", sessionId);
+
+        Booking booking = bookingRepository
+                .findBystripeSessionId(sessionId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Booking does not exist with session Id : " + sessionId));
+
+        booking.setBookingStatus(BookingStatus.CONFIRMED);
+
+        // inventoryRepository.confirmReservation(
+        //         booking.getRoom().getId(),
+        //         booking.getCheckIn(),
+        //         booking.getCheckOut(),
+        //         booking.getTotalRooms()
+        // );
+
+        bookingRepository.save(booking);
+
+        log.info("Booking Confirmed for Booking Id : {}", booking.getId());
+
+    } else {
+        log.warn("Unwanted event type : {}", event.getType());
+    }
 }
 
-Session session = (Session)
-        dataObjectDeserializer.getObject().get();
-            if(session==null)return;
+    @Override
+    @Transactional
+    public void CancelBooking(Long bookingId) throws StripeException {
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(()->new ResourceNotFoundException("Booking Does not Exist with Id : "+bookingId ));
+        User user = getUser();
 
-            String sessionId = session.getId();
-            Booking booking= bookingRepository.findBystripeSessionId(sessionId).orElseThrow(()->new ResourceNotFoundException("Booking does not exist with session Id :"+sessionId));
-
-            booking.setBookingStatus(BookingStatus.CONFIRMED);
-//            inventoryRepository.confirmReservation(booking.getRoom().getId(),booking.getCheckIn(),booking.getCheckOut(),booking.getTotalRooms());
-
-
-            bookingRepository.save(booking);
-
-            log.info("Booking Confirmed for the Booking Id: " +booking.getId());
+        if(user.getId()!=booking.getUser().getId()){
+            throw new UnauthorizedException("Booking Guest does not match the Logged in Guest :"+user.getEmail());
         }
-        else{
-            log.warn("Unwanted event type {} :",event.getType() );
-        }
+
+       if(booking.getBookingStatus()!=BookingStatus.CONFIRMED){
+           throw new UnauthorizedException("Only Confirmed Booking Could be Cancelled");
+       }
+        booking.setBookingStatus(BookingStatus.CANCELLED);
+        bookingRepository.save(booking);
+        inventoryRepository.cancelReservation(booking.getRoom().getId(),booking.getCheckIn(),booking.getCheckOut(),booking.getTotalRooms());
+
+
+
+
+
+        /// Handling Refund
+        Session session = Session.retrieve(booking.getStripeSessionId());
+        RefundCreateParams refundCreateParams = RefundCreateParams
+                .builder()
+                .setPaymentIntent(session.getPaymentIntent())
+
+                .build();
+        Refund.create(refundCreateParams);
+
+
 
     }
-
-
 
 
     public boolean isBookingExpired(Booking booking){
