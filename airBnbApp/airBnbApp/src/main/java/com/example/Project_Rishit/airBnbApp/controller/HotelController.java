@@ -1,5 +1,6 @@
 package com.example.Project_Rishit.airBnbApp.controller;
 
+import com.example.Project_Rishit.airBnbApp.dto.BookingResponseDto;
 import com.example.Project_Rishit.airBnbApp.dto.HotelRequestDto;
 import com.example.Project_Rishit.airBnbApp.dto.HotelResponseDto;
 import com.example.Project_Rishit.airBnbApp.service.HotelService;
@@ -9,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/admin/hotels")
@@ -48,6 +51,16 @@ public class HotelController {
     public ResponseEntity<Void> ActivateHotel(@PathVariable Long HotelId){
         hotelService.ActivateHotel(HotelId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<HotelResponseDto>> listofHotels(){
+       return ResponseEntity.ok(hotelService.getAllHotels());
+    }
+
+    @GetMapping("/{hotelId}/bookings")
+    public ResponseEntity<List<BookingResponseDto>> findBookings(@PathVariable Long hotelId){
+        return ResponseEntity.ok(hotelService.findBookingsOfHotel(hotelId));
     }
 
 
