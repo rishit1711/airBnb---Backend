@@ -77,6 +77,11 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
+    public RoomResponseDto UpdateRoomById(Long roomId, Long hotelId) {
+        return null;
+    }
+
+    @Override
     public RoomResponseDto GetRoomById(Long roomId) {
         log.info("Getting Room in Hotel with Id : {}",roomId);
         Room room = roomRepository.findById(roomId).
