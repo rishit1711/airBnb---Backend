@@ -11,7 +11,9 @@ import com.example.Project_Rishit.airBnbApp.repository.RoomRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -77,9 +79,26 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
-    public RoomResponseDto UpdateRoomById(Long roomId, Long hotelId) {
-        return null;
+    public  RoomResponseDto UpdateRoomById(Long roomId, Long hotelId, RoomRequestDto roomRequestDto) {
+        log.info("Updating Room Information of room with Id :{} ",roomId);
+        Hotel hotel =  hotelRepository.findById(hotelId).orElseThrow(() -> new ResourceNotFoundException("Hotel does not exist with Id: "+hotelId));
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(hotel.getOwner().getId()!= user.getId()){
+            throw new AccessDeniedException("You are not the Owner of this hotel");
+        }
+        Room room = roomRepository.findById(roomId).
+                orElseThrow(()->new ResourceNotFoundException("Room Does not Exist with this Id"+roomId));
+
+        modelMapper.map(roomRequestDto,room);
+        room.setId(roomId);
+
+        room = roomRepository.save(room);
+        return modelMapper.map(room, RoomResponseDto.class);
+
+
     }
+
 
     @Override
     public RoomResponseDto GetRoomById(Long roomId) {
