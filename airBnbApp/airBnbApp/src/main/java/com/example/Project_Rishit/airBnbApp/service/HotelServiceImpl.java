@@ -152,9 +152,12 @@ public class HotelServiceImpl implements HotelService{
     public List<BookingResponseDto> findBookingsOfHotel(Long hotelId) {
         Hotel hotel =  hotelRepository.findById(hotelId).orElseThrow(() -> new ResourceNotFoundException("Hotel does not exist with Id: "+hotelId));
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        log.info("Getting all Booking with hotelId :{} ",hotelId);
         if(hotel.getOwner().getId()!= user.getId()){
             throw new AccessDeniedException("You are not the Owner of this hotel");
         }
+        log.info("Converting booking into ResponseDTO Using Mapper");
         List<Booking> bookings=bookingRepository.findByHotelId(hotelId);
         return bookings.stream()
                 .map(element -> modelMapper.map(element,BookingResponseDto.class))

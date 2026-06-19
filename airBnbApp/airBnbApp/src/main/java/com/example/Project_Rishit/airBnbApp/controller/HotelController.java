@@ -1,8 +1,10 @@
 package com.example.Project_Rishit.airBnbApp.controller;
 
 import com.example.Project_Rishit.airBnbApp.dto.BookingResponseDto;
+import com.example.Project_Rishit.airBnbApp.dto.HotelReportDto;
 import com.example.Project_Rishit.airBnbApp.dto.HotelRequestDto;
 import com.example.Project_Rishit.airBnbApp.dto.HotelResponseDto;
+import com.example.Project_Rishit.airBnbApp.service.BookingService;
 import com.example.Project_Rishit.airBnbApp.service.HotelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -19,6 +22,7 @@ import java.util.List;
 @Slf4j
 public class HotelController {
     private final HotelService hotelService;
+    private final BookingService bookingService;
     @PreAuthorize("hasRole('HOTEL_MANAGER')")
     @PostMapping
     public ResponseEntity<HotelResponseDto> CreateHotel(@RequestBody HotelRequestDto requestDto){
@@ -61,6 +65,11 @@ public class HotelController {
     @GetMapping("/{hotelId}/bookings")
     public ResponseEntity<List<BookingResponseDto>> findBookings(@PathVariable Long hotelId){
         return ResponseEntity.ok(hotelService.findBookingsOfHotel(hotelId));
+    }
+
+    @GetMapping("/{hotelId}/reports")
+    public ResponseEntity<HotelReportDto> report(@PathVariable Long hotelId, @RequestParam LocalDate startDate,@RequestParam LocalDate endDate){
+        return ResponseEntity.ok(bookingService.findHotelReport(hotelId,startDate,endDate));
     }
 
 

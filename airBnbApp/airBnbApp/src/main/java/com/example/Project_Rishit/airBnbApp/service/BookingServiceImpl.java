@@ -5,6 +5,7 @@ import com.example.Project_Rishit.airBnbApp.Exceptions.UnauthorizedException;
 import com.example.Project_Rishit.airBnbApp.dto.BookingRequestDto;
 import com.example.Project_Rishit.airBnbApp.dto.BookingResponseDto;
 import com.example.Project_Rishit.airBnbApp.dto.GuestDto;
+import com.example.Project_Rishit.airBnbApp.dto.HotelReportDto;
 import com.example.Project_Rishit.airBnbApp.entity.*;
 import com.example.Project_Rishit.airBnbApp.entity.enums.BookingStatus;
 import com.example.Project_Rishit.airBnbApp.repository.*;
@@ -21,13 +22,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -224,6 +229,43 @@ public void capturePayment(Event event) {
         Refund.create(refundCreateParams);
 
 
+
+    }
+
+    @Override
+    public HotelReportDto findHotelReport(Long hotelId, LocalDate startDate, LocalDate endDate) {
+        Hotel hotel =  hotelRepository.findById(hotelId).orElseThrow(() -> new ResourceNotFoundException("Hotel does not exist with Id: "+hotelId));
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        log.info("Generating Report  with hotelId :{} ",hotelId);
+        if(hotel.getOwner().getId()!= user.getId()){
+            throw new AccessDeniedException("You are not the Owner of this hotel");
+        }
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+        List<Booking> bookingList = bookingRepository.findByHotelAndCreatedAtBetween(hotel,startDateTime,endDateTime);
+
+        Long TotalConfirmedBookings = bookingList
+                .stream()
+                .filter(booking -> booking
+                        .getBookingStatus()==BookingStatus.CONFIRMED)
+                .count();
+
+        BigDecimal Totalrevenue = bookingList.stream()
+                .filter(b -> b.getBookingStatus() == BookingStatus.CONFIRMED)
+                .map(Booking::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if(TotalConfirmedBookings==0){
+            throw  new RuntimeException("No booking has been done");
+        }
+        BigDecimal AvgRevenue = Totalrevenue.divide(BigDecimal.valueOf(TotalConfirmedBookings));
+
+
+        return HotelReportDto.builder()
+                .bookingCount(TotalConfirmedBookings)
+                .totalRevenue(Totalrevenue)
+                .avgRevenue(AvgRevenue).build();
 
     }
 
