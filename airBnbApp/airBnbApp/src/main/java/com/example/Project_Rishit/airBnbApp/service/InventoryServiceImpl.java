@@ -1,29 +1,37 @@
 package com.example.Project_Rishit.airBnbApp.service;
 
+import com.example.Project_Rishit.airBnbApp.Exceptions.ResourceNotFoundException;
+import com.example.Project_Rishit.airBnbApp.Exceptions.UnauthorizedException;
 import com.example.Project_Rishit.airBnbApp.dto.HotelResponseDto;
 import com.example.Project_Rishit.airBnbApp.dto.HotelSearchRequest;
 import com.example.Project_Rishit.airBnbApp.dto.InventoryResponse;
 import com.example.Project_Rishit.airBnbApp.entity.Hotel;
 import com.example.Project_Rishit.airBnbApp.entity.Inventory;
 import com.example.Project_Rishit.airBnbApp.entity.Room;
+import com.example.Project_Rishit.airBnbApp.entity.User;
 import com.example.Project_Rishit.airBnbApp.repository.InventoryRepository;
+import com.example.Project_Rishit.airBnbApp.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class InventoryServiceImpl implements InventoryService{
     private final InventoryRepository inventoryRepository;
+    private final RoomRepository roomRepository;
     private  final ModelMapper modelMapper;
 
 
@@ -62,8 +70,18 @@ public class InventoryServiceImpl implements InventoryService{
     }
 
     @Override
-    public InventoryResponse getAllInventoryOfRoom(Long roomId) {
-        return null;
+    public List<InventoryResponse> getAllInventoryOfRoom(Long roomId) {
+
+        Room room = roomRepository.findById(roomId).orElseThrow(()->new ResourceNotFoundException("Room does not exist with Id : "+roomId));
+
+        User user  = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(room.getHotel().getOwner()!=user){
+            throw new UnauthorizedException("You are not the owner of this Hotel");
+        }
+        List<Inventory> inventoryList = inventoryRepository.findByRoom(roomId);
+        return inventoryList.stream()
+                .map((element) -> modelMapper.map(element, InventoryResponse.class)).collect(Collectors.toList());
     }
 
     @Override

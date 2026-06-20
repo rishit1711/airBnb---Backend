@@ -104,6 +104,9 @@ AND i.closed = false
 
 
 
+    List<Inventory> findByRoom(Long roomId);
+
+
 
 
 }

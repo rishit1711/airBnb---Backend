@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/admin/inventory")
 @RequiredArgsConstructor
@@ -18,7 +20,7 @@ public class InventoryController {
 
     @GetMapping("/rooms/{roomId}")
 
-    public ResponseEntity<InventoryResponse> getAllInventory(@PathVariable Long roomId){
+    public ResponseEntity<List<InventoryResponse>> getAllInventory(@PathVariable Long roomId){
         return ResponseEntity.ok(inventoryService.getAllInventoryOfRoom(roomId));
     }
 
