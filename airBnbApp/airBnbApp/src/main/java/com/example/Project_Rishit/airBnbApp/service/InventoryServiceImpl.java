@@ -2,6 +2,7 @@ package com.example.Project_Rishit.airBnbApp.service;
 
 import com.example.Project_Rishit.airBnbApp.dto.HotelResponseDto;
 import com.example.Project_Rishit.airBnbApp.dto.HotelSearchRequest;
+import com.example.Project_Rishit.airBnbApp.dto.InventoryResponse;
 import com.example.Project_Rishit.airBnbApp.entity.Hotel;
 import com.example.Project_Rishit.airBnbApp.entity.Inventory;
 import com.example.Project_Rishit.airBnbApp.entity.Room;
@@ -59,6 +60,12 @@ public class InventoryServiceImpl implements InventoryService{
 
         return hotels.map((element) ->modelMapper.map(element,HotelResponseDto.class));
     }
+
+    @Override
+    public InventoryResponse getAllInventoryOfRoom(Long roomId) {
+        return null;
+    }
+
     @Override
     public void deleteFutureInventories(Room room) {
         LocalDate today = LocalDate.now();
