@@ -1,10 +1,12 @@
 package com.example.Project_Rishit.airBnbApp.service;
 
 import com.example.Project_Rishit.airBnbApp.Exceptions.ResourceNotFoundException;
+import com.example.Project_Rishit.airBnbApp.dto.ProfileUpdateRequest;
 import com.example.Project_Rishit.airBnbApp.entity.User;
 import com.example.Project_Rishit.airBnbApp.entity.enums.Role;
 import com.example.Project_Rishit.airBnbApp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +19,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
     @Override
     public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User With this Id does not exist"));
@@ -35,6 +38,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         user.getRoles().add(Role.HOTEL_MANAGER);
         userRepository.save(user);
+
+    }
+
+    @Override
+    public void UpdateProfileDetails(ProfileUpdateRequest updateRequest) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(updateRequest.getDateOfBirth()!=null) user.setDateOfBirth(updateRequest.getDateOfBirth());
+        if(updateRequest.getGender()!=null) user.setGender(updateRequest.getGender());
+        if(updateRequest.getName()!=null) user.setName(updateRequest.getName());
+        userRepository.save(user);
+
 
     }
 

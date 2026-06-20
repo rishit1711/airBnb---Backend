@@ -32,7 +32,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -267,6 +266,17 @@ public void capturePayment(Event event) {
                 .totalRevenue(Totalrevenue)
                 .avgRevenue(AvgRevenue).build();
 
+    }
+
+    @Override
+    public List<BookingResponseDto> getMyBookings(Long userId) {
+        User user = getUser();
+        if(user.getId()!=userId){
+            throw new UnauthorizedException("Not Authorized to See Bookings");
+        }
+        List<Booking> bookings = bookingRepository.findByUser(userId);
+        return bookings.stream()
+                .map(element -> modelMapper.map(element,BookingResponseDto.class)).toList();
     }
 
 
