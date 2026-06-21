@@ -13,7 +13,6 @@ import com.example.Project_Rishit.airBnbApp.repository.HotelRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jspecify.annotations.Nullable;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +20,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -158,7 +156,7 @@ public class HotelServiceImpl implements HotelService{
             throw new AccessDeniedException("You are not the Owner of this hotel");
         }
         log.info("Converting booking into ResponseDTO Using Mapper");
-        List<Booking> bookings=bookingRepository.findByHotelId(hotelId);
+        List<Booking> bookings=bookingRepository.findByHotelHotelId(hotelId);
         return bookings.stream()
                 .map(element -> modelMapper.map(element,BookingResponseDto.class))
                 .toList();
