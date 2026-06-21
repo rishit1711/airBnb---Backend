@@ -1,14 +1,20 @@
+![Java](https://img.shields.io/badge/Java-21-orange)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
+![Railway](https://img.shields.io/badge/Deployed-Railway-purple)
+
 # Airbnb Backend Clone
 
 A production-inspired hotel booking backend built using Spring Boot that focuses on real-world backend engineering challenges such as inventory management, concurrent bookings, dynamic pricing, booking lifecycle management, and payment processing.
 
 ---
 
-## Live API Documentation
+## Links
 
-Explore and test the deployed REST APIs using Swagger UI.
+### GitHub Repository
+https://github.com/<your-username>/<your-repository>
 
-### Swagger UI
+### Live API Documentation (Swagger UI)
 https://airbnb-backend-production-bc0b.up.railway.app/swagger-ui/index.html
 
 ### OpenAPI Specification
@@ -35,7 +41,7 @@ https://airbnb-backend-production-bc0b.up.railway.app/v3/api-docs
 - Hotel search
 - Room booking workflow
 - Guest management
-- Booking lifecycle handling
+- Booking lifecycle management
 
 ### Payment Module
 - Payment processing
@@ -69,7 +75,8 @@ https://airbnb-backend-production-bc0b.up.railway.app/v3/api-docs
 - Strategy Design Pattern
 - Inventory-Driven Booking System
 - Transaction Management
-- REST APIs
+- RESTful APIs
+- Database-Centric Booking Workflow
 
 ---
 
@@ -85,7 +92,7 @@ https://airbnb-backend-production-bc0b.up.railway.app/v3/api-docs
 
 ---
 
-## Booking Flow
+## Booking Workflow
 
 ```text
 Search Hotel
@@ -103,26 +110,43 @@ Confirm Booking
 
 ---
 
+## Key Backend Concepts Implemented
+
+- Authentication & Authorization
+- Inventory Management
+- Booking Lifecycle Handling
+- Payment Workflow
+- Transaction Consistency
+- Dynamic Pricing Strategies
+- Exception Handling
+- DTO-Based API Design
+- Database Relationships & Mapping
+
+---
+
 ## Future Improvements
 
 - Redis Caching
 - Docker Support
-- Elasticsearch Search
+- Elasticsearch-Based Search
+- Microservices Migration
+- Distributed Inventory Locking
 
 ---
 
 ## Learning Outcomes
 
-- Inventory Management
+- Inventory Management Systems
 - Concurrent Booking Handling
-- Transaction Consistency
-- Dynamic Pricing Systems
+- Transaction Management
+- Dynamic Pricing Engines
 - Scalable Backend Design
+- Real-World Booking System Architecture
 
 ---
 
 ## Purpose
 
-This project was built to understand how real-world booking systems handle inventory, pricing, reservations, and payments beyond basic CRUD operations.
+This project was built to understand how real-world hotel booking platforms handle inventory, reservations, pricing, authentication, and payment workflows beyond basic CRUD applications.
 
-The primary focus was to gain hands-on experience with backend architecture, transactional workflows, inventory management, pricing strategies, authentication, and scalable system design using Spring Boot.
+The primary focus was gaining hands-on experience with backend architecture, transactional workflows, inventory-driven systems, and scalable application design using Spring Boot.
