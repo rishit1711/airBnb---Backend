@@ -28,10 +28,6 @@ https://airbnb-backend-production-bc0b.up.railway.app/api/v1/swagger-ui/index.ht
 
 https://airbnb-backend-production-bc0b.up.railway.app/api/v1/v3/api-docs
 
-### GitHub Repository
-
-https://github.com/YOUR_USERNAME/YOUR_REPOSITORY
-
 ---
 
 ## ✨ Features
