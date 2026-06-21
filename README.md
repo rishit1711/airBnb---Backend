@@ -22,7 +22,7 @@ https://airbnb-backend-production-bc0b.up.railway.app
 
 ### Swagger Documentation
 
-https://airbnb-backend-production-bc0b.up.railway.app/api/v1/swagger-ui/index.html
+https://airbnb-backend-production-bc0b.up.railway.app/swagger-ui/index.html
 
 ### OpenAPI Specification
 
